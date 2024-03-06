@@ -12,10 +12,11 @@
           input#email(
             placeholder="mail@gmail.com",
             type="email",
-            v-model="form.identifier"
+            v-model="form.identifier",
+            @blur="$v.identifier.$touch()"
           )
-          span.error(v-if="$v.identifier.required.$invalid") This field must not be empty
-        .form-group
+          span.error(v-if="$v.identifier.required.$invalid") Required field
+        .form-group(:class="getValidationClass($v, 'password')")
           .help-message
             label(for="password") Password
           input#password(
@@ -23,9 +24,12 @@
             v-model="form.password",
             @blur="$v.password.$touch()"
           )
-          button.btn-password.btn__icon.no-hover
+          button.btn-password.btn__icon(
+            :class="{ hide: passwordType === 'text' }",
+            @click="showPassword"
+          )
             i.icon.icon-password
-          span.error(v-if="$v.password.required.$invalid") This field must not be empty
+          span.error(v-if="$v.password.required.$invalid") Required field
         button.btn__default.btn__action(@click="signIn") Log in
 
         p.text-center.text-12 New user?
@@ -41,6 +45,7 @@ import useVuelidate from "@vuelidate/core";
 import router from "@/router";
 
 import { addToast } from "@/composables/toaster";
+import { passwordType, showPassword } from "@/composables/password";
 import { dashboardStore } from "@/store/dashboard";
 import { UserInterface } from "@/types/UserInterface";
 import { ToasterTypes } from "@/constants/toasterTypes";
@@ -64,10 +69,6 @@ const $v = useVuelidate(rules, form);
 
 const userStore = dashboardStore();
 
-const save = () => {
-  login({}).then();
-};
-
 const signIn = () => {
   const authorize = (res: { jwt: string; user: UserInterface }) => {
     if (res.jwt) {
@@ -90,7 +91,10 @@ const signIn = () => {
         }
       })
       .catch(() => {
-        console.log("помилка");
+        addToast({
+          status: ToasterTypes.error,
+          message: "Invalid identifier or password",
+        });
       });
   }
 };
@@ -98,6 +102,7 @@ const signIn = () => {
 
 <style scoped lang="scss">
 @import "@/scss/_media";
+@import "@/scss/styles";
 
 .logo {
   position: absolute;
@@ -123,7 +128,7 @@ const signIn = () => {
 
   @include media_mobile {
     background-image: url("@/assets/image/background-mobile.svg"),
-      url("@/assets/image/background- mobile2.svg");
+      url("@/assets/image/background-mobile2.svg");
   }
 }
 .btn__outline {
@@ -155,6 +160,15 @@ const signIn = () => {
   @include media_mobile {
     font-size: 16px;
     line-height: 20px;
+  }
+}
+.error {
+  input {
+    border-color: var(--red);
+  }
+
+  span {
+    display: block;
   }
 }
 </style>
