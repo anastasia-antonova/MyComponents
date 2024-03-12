@@ -28,7 +28,6 @@
             :class="{ hide: passwordType === 'text' }",
             @click="showPassword"
           )
-            i.icon.icon-password
           span.error(v-if="$v.password.required.$invalid") Required field
         button.btn__default.btn__action(@click="signIn") Log in
 
@@ -103,6 +102,7 @@ const signIn = () => {
 <style scoped lang="scss">
 @import "@/scss/_media";
 @import "@/scss/styles";
+@import "@/scss/auth.scss";
 
 .logo {
   position: absolute;

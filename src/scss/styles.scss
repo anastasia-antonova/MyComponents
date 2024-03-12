@@ -225,15 +225,11 @@ body.no-scroll {
       background-color: transparent;
       border: none;
 
-      &:hover {
-        .icon-password {
-          background-color: var(--black);
-        }
-      }
 
       &.hide {
-        //mask-image: url("@/assets/image/hide-password.svg");
+        mask-image: url("@/assets/image/hide-password.svg");
       }
+
 
       .icon-password {
         background-color: black;
@@ -635,8 +631,9 @@ button {
 
     }
 
-    &.hide {
+    &.icon-hide {
       mask-image: url("@/assets/image/hide-password.svg");
+      background-color: black;
     }
 
     .icon-password {

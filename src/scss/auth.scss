@@ -172,6 +172,26 @@
             }
           }
 
+          button {
+            &.btn-password{
+              width: 20px;
+              height: 20px;
+              border: none;
+              background-color: inherit;
+              position: absolute;
+              right: 15px;
+              top: 43px;
+              background-size: cover;
+              background-image: url("@/assets/image/icon/icon-pasword.svg");
+              cursor: pointer;
+
+              &.hide {
+                background-image: url("@/assets/image/hide-password.svg");
+
+              }
+            }
+          }
+
           &.error {
             input {
               border-color: var(--red);
