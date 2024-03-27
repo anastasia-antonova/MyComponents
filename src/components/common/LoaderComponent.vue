@@ -5,6 +5,7 @@
 <style scoped lang="scss">
 .loader {
   width: 60px;
+  height: 30px;
   aspect-ratio: 2;
   --_g: no-repeat radial-gradient(circle closest-side, #000 90%, #0000);
   background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;

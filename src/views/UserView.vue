@@ -1,212 +1,223 @@
 <template lang="pug">
 page-header
-.banner
-  .image-banner
-    input(v-show="showForm" @change="onFileChangeBanner($event)" name="img" accept="image/*" type="file")
-    img.image-show(v-if="baseBanner" :src="JSON.parse(JSON.stringify(baseBanner))" alt="upload-im")
-    .container-upload(v-show="showForm" )
-       .icon.icon-image
-       p Add your header image
+.test(v-if="isLoader")
+  .banner
+  .body
+    .main-content
+      .user-image-form
+        .upload-image
+          .shadow
+           .icon.icon-image
+      LoaderComponent
 
 
-.body(v-if="userData")
-  .main-content
-    .user-image-form
-      .upload-image(v-if="showForm")
-        .shadow
+template(v-else)
+  .banner
+    .image-banner
+      input(v-show="showForm" @change="onFileChangeBanner($event)" name="img" accept="image/*" type="file")
+      img.image-show(v-if="baseBanner" :src="JSON.parse(JSON.stringify(baseBanner))" alt="upload-im")
+      .container-upload(v-show="showForm" )
          .icon.icon-image
-        input(type="file" @change="onFileChangeUser($event)" accept="image/*")
-        img(:src="JSON.parse(JSON.stringify(baseUser))" alt="name")
-      template(v-else-if="userData!.image")
-        img.imgUser(:src="JSON.parse(JSON.stringify(userData!.image))" alt="name")
-      template(v-else)
-        img(:src="genderImage" alt="name")
-    .user-info
-      .name
-        h2 {{  userData!.name  }} {{  userData!.surname  }}
-        p {{  userData!.username  }}
+         p Add your header image
+  .body(v-if="baseUser")
+    .main-content
+      .user-image-form
+        .upload-image(v-if="showForm")
+          .shadow
+           .icon.icon-image
+          input(type="file" @change="onFileChangeUser($event)" accept="image/*")
+          img(:src="JSON.parse(JSON.stringify(baseUser))" alt="name")
+        template(v-else-if="userData!.image")
+          img.imgUser(:src="JSON.parse(JSON.stringify(userData!.image))" alt="name")
+        template(v-else)
+          img(:src="genderImage" alt="name")
+      .user-info
+        .name
+          h2 {{  userData!.name  }} {{  userData!.surname  }}
+          p {{  userData!.username  }}
 
-      .info(v-if="!showForm")
-        .work
-          h2 Work
-          .item
-            .container-title
+        .info(v-if="!showForm")
+          .work
+            h2 Work
+            .item
+              .container-title
+                .icon.icon-member
+                p Manager
+
+              p.bold {{  userData!.manager  }}
+
+            .item.bottom
+              .container-title
+                .icon.icon-department
+                p Department
+
+              p.bold {{  userData!.department  }}
+
+          .work
+            h2 Contact
+            .item
+              .container-title
+               .icon.icon-letter
+               p Mail
+              p.bold.dots {{  userData!.email  }}
+
+            .item
+              .container-title
+               .icon.icon-call
+               p Phone
+              p.bold {{  userData!.phone  }}
+
+            .item
+              .container-title
+               .icon.icon-github
+               p GitHub
+              p.bold {{  userData!.gitHub  }}
+
+            .item.bottom
+              .container-title
+               .icon.icon-gitlab
+               p GitLab
+              p.bold {{  userData!.gitLab  }}
+
+
+        .info.edit(v-if="showForm")
+          .work
+            h2 Work
+            .item
+             .icon.icon-member
+             .form-edit
+                  label(for="manager") Manager
+                  input#manager(type="text" v-model="userData!.manager" )
+
+            .item
               .icon.icon-member
-              p Manager
+              .form-edit
+                label(for="juniors") Juniors
+                input#juniors(type="text" )
 
-            p.bold {{  userData!.manager  }}
-
-          .item.bottom
-            .container-title
+            .item.bottom
               .icon.icon-department
-              p Department
-
-            p.bold {{  userData!.department  }}
-
-        .work
-          h2 Contact
-          .item
-            .container-title
-             .icon.icon-letter
-             p Mail
-            p.bold.dots {{  userData!.email  }}
-
-          .item
-            .container-title
-             .icon.icon-call
-             p Phone
-            p.bold {{  userData!.phone  }}
-
-          .item
-            .container-title
-             .icon.icon-github
-             p GitHub
-            p.bold {{  userData!.gitHub  }}
-
-          .item.bottom
-            .container-title
-             .icon.icon-gitlab
-             p GitLab
-            p.bold {{  userData!.gitLab  }}
+              .form-edit
+                label(for="manager") Department
+                input#manager(type="text" v-model="userData!.department " )
 
 
-      .info.edit(v-if="showForm")
-        .work
-          h2 Work
-          .item
-           .icon.icon-member
-           .form-edit
-                label(for="manager") Manager
-                input#manager(type="text" v-model="userData!.manager" )
+          .work
+            h2 Contact
+            .item
+              .icon.icon-letter
+              .form-edit
+                  label(for="mail") Mail
+                  input#mail(type="text" v-model="userData!.email" )
+            .item
+              .icon.icon-call
+              .form-edit
+                  label(for="phone") Phone
+                  input#phone(type="text" v-model="userData!.phone" )
+            .item
+              .icon.icon-github
+              .form-edit
+                label(for="gitHub") GitHub
+                input#gitHub(type="text" v-model="userData!.gitHub" )
 
-          .item
-            .icon.icon-member
-            .form-edit
-              label(for="juniors") Juniors
-              input#juniors(type="text" )
-
-          .item.bottom
-            .icon.icon-department
-            .form-edit
-              label(for="manager") Department
-              input#manager(type="text" v-model="userData!.department " )
-
-
-        .work
-          h2 Contact
-          .item
-            .icon.icon-letter
-            .form-edit
-                label(for="mail") Mail
-                input#mail(type="text" v-model="userData!.email" )
-          .item
-            .icon.icon-call
-            .form-edit
-                label(for="phone") Phone
-                input#phone(type="text" v-model="userData!.phone" )
-          .item
-            .icon.icon-github
-            .form-edit
-              label(for="gitHub") GitHub
-              input#gitHub(type="text" v-model="userData!.gitHub" )
-
-          .item.bottom
-            .icon.icon-gitlab
-            .form-edit
-                label(for="gitLab") GitLab
-                input#gitLab(type="text" v-model="userData!.gitLab " )
+            .item.bottom
+              .icon.icon-gitlab
+              .form-edit
+                  label(for="gitLab") GitLab
+                  input#gitLab(type="text" v-model="userData!.gitLab " )
 
 
-    .details
-      .edit
-        h2 Details
+      .details
+        .edit
+          h2 Details
 
-        button(v-if="!showForm", @click="showForm = true").btn-icon.primary Edit
-          .icon.icon-edit
-        button(v-show="showForm", @click="saveEdit" ).btn-icon.primary.save Save
-          .icon.icon-edit
-      .info(v-if="showForm")
-        .work
-          .item
-            .icon.icon-name
-            .form-edit
-              label(for="name") Name
-              input#name(type="text" v-model="userData!.name" )
+          button(v-if="!showForm", @click="showForm = true").btn-icon.primary Edit
+            .icon.icon-edit
+          button.btn-icon.primary.save(:class="{ loader_button: isButtonLoader }" v-show="showForm", @click="saveEdit" ) Save
+           .example
+             .loader-content
+           .icon.icon-edit
+        .info(v-if="showForm")
+          .work
+            .item
+              .icon.icon-name
+              .form-edit
+                label(for="name") Name
+                input#name(type="text" v-model="userData!.name" )
 
-          .item
-            .icon.icon-surname
-            .form-edit
-               label(for="surname") Surname
-               input#surname(type="text" v-model="userData!.surname" )
+            .item
+              .icon.icon-surname
+              .form-edit
+                 label(for="surname") Surname
+                 input#surname(type="text" v-model="userData!.surname" )
 
-          .item
-            .icon.icon-nickname
-            .form-edit
-              label(for="nickname") Nickname
-              input#nickname(type="text")
+            .item
+              .icon.icon-nickname
+              .form-edit
+                label(for="nickname") Nickname
+                input#nickname(type="text")
 
-          .item
+            .item
 
-            .icon.icon-gender
-            .form-edit
-                label(for="gender") Gender
-                input#gender(type="text" v-model="userData!.gender" )
+              .icon.icon-gender
+              .form-edit
+                  label(for="gender") Gender
+                  input#gender(type="text" v-model="userData!.gender" )
+            .item
 
-          .item
+              .icon.icon-birth
+              .form-edit
+                  label(for="birthDate") Birth Date
+                  input#birthDate(type="text" v-model="userData!.birthDate" )
+            .item
 
-            .icon.icon-birth
-            .form-edit
-                label(for="birthDate") Birth Date
-                input#birthDate(type="text" v-model="userData!.birthDate" )
-          .item
+              .icon.icon-company
+              .form-edit
+                  label(for="position") Position
+                  input#position(type="text" v-model=" userData!.position" )
+            .item
 
-            .icon.icon-company
-            .form-edit
-                label(for="position") Position
-                input#position(type="text" v-model=" userData!.position" )
-          .item
+              .icon.icon-visible
+              .form-edit
+                label(for="profile") Profile
+                textarea#profile( v-model="userData!.profile" )
 
-            .icon.icon-visible
-            .form-edit
-              label(for="profile") Profile
-              textarea#profile( v-model="userData!.profile" )
+            .item.bottom
 
-          .item.bottom
+              .icon.icon-compass
+              .form-edit
+                label(for="address") Profile
+                input#address( v-model="userData!.address" )
 
-            .icon.icon-compass
-            .form-edit
-              label(for="address") Profile
-              input#address( v-model="userData!.address" )
+        .info(v-if="!showForm")
+          .work
+            .item
+              .container-title
+               .icon.icon-gender
+               p Gender
+              p.bold {{  userData!.gender  }}
+            .item
+              .container-title
+               .icon.icon-birth
+               p Birth Date
+              p.bold {{  userData!.birthDate  }}
+            .item
+              .container-title
+               .icon.icon-company
+               p Position
+              p.bold {{  userData!.position }}
+            .item
+              .container-title
+               .icon.icon-visible
+               p Profile
+              p.bold.wrap {{  userData!.profile }}
+            .item.bottom
+              .container-title
+               .icon.icon-compass
+               p Address
+              p.bold {{  userData!.address  }}
 
-      .info(v-if="!showForm")
-        .work
-          .item
-            .container-title
-             .icon.icon-gender
-             p Gender
-            p.bold {{  userData!.gender  }}
-          .item
-            .container-title
-             .icon.icon-birth
-             p Birth Date
-            p.bold {{  userData!.birthDate  }}
-          .item
-            .container-title
-             .icon.icon-company
-             p Position
-            p.bold {{  userData!.position }}
-          .item
-            .container-title
-             .icon.icon-visible
-             p Profile
-            p.bold.wrap {{  userData!.profile }}
-          .item.bottom
-            .container-title
-             .icon.icon-compass
-             p Address
-            p.bold {{  userData!.address  }}
-
-  button.primary.btn-mobile(v-if="isMobile") edit
+    button.primary.btn-mobile(v-if="isMobile") edit
 </template>
 
 <script setup lang="ts">
@@ -215,13 +226,12 @@ import { isMobile, addListener, listener } from "@/composables/actionFunctions";
 import { computed, onMounted, reactive, ref } from "vue";
 import { changeUser, getUser } from "@/services/userApi";
 import { UserInterface } from "@/types/UserInterface";
-import { resolveConfig } from "prettier";
-import Loader from "@/components/common/Loader.vue";
-
+import LoaderComponent from "@/components/common/LoaderComponent.vue";
 const showForm = ref(false);
 const baseBanner = ref("");
 const baseUser = ref("");
 const isLoader = ref(false);
+const isButtonLoader = ref(false);
 
 const userData = ref<UserInterface | undefined>(undefined);
 addListener();
@@ -229,11 +239,16 @@ const genderImage = computed(() => {
   return require(`@/assets/image/${userData.value!.gender}.png`);
 });
 onMounted(() => {
-  getUser().then(({ data }: { data: UserInterface }) => {
-    console.log(data);
-    userData.value = data;
-    baseUser.value = data.image;
-  });
+  isLoader.value = true;
+  getUser()
+    .then(({ data }: { data: UserInterface }) => {
+      console.log(data);
+      userData.value = data;
+      baseUser.value = data.image;
+    })
+    .finally(() => {
+      isLoader.value = false;
+    });
 });
 
 const onFileChangeBanner = ($event: Event) => {
@@ -274,6 +289,7 @@ const onFileChangeUser = ($event: Event) => {
 };
 
 function saveEdit() {
+  isButtonLoader.value = true;
   changeUser(userData.value!.id, {
     name: userData.value!.name,
     manager: userData.value!.manager,
@@ -290,14 +306,46 @@ function saveEdit() {
     address: userData.value!.address,
     image: baseUser.value,
     banner: baseBanner.value,
-  }).then();
-  showForm.value = false;
+  })
+    .then()
+    .finally(() => {
+      isButtonLoader.value = false;
+      showForm.value = false;
+    });
 }
 </script>
 
 <style scoped lang="scss">
 @import "@/scss/_media";
 @import "@/scss/styles";
+
+.test {
+  width: 100%;
+  height: 100vh;
+
+  .body {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    min-height: 100vh;
+    .main-content {
+      align-items: center;
+      justify-content: center;
+      width: 945px;
+      max-height: 100vh;
+    }
+
+    .user-image-form {
+      background-color: var(--secondary);
+
+      .upload-image {
+        .shadow {
+          background-color: inherit;
+        }
+      }
+    }
+  }
+}
 
 .banner {
   width: 100%;
