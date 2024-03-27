@@ -1,5 +1,5 @@
 import { UserInterface } from "@/types/UserInterface";
-import axiosClient from "@/services/api";
+import { axiosClient } from "@/services/api";
 
 export interface LoginUser {
   identifier: string;

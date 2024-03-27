@@ -1,13 +1,24 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { UserInterface } from "@/types/UserInterface";
 
 export const useUserStore = defineStore(
   "user",
   () => {
-    const data = ref({});
+    const user = ref({});
     const accessToken = ref(localStorage.getItem("accessToken"));
     const refreshToken = ref(localStorage.getItem("refreshToken"));
     const rememberMe = ref(false);
+
+    const isAuthorized = ref(false);
+
+    const setAuthorized = () => {
+      isAuthorized.value = true;
+    };
+
+    const saveUser = (payload: any) => {
+      user.value = payload;
+    };
 
     function setTokens(payload: {
       accessToken: string;
@@ -26,7 +37,7 @@ export const useUserStore = defineStore(
     }
 
     function clear() {
-      data.value = {};
+      user.value = {};
       accessToken.value = "";
       refreshToken.value = "";
       rememberMe.value = false;
@@ -34,7 +45,16 @@ export const useUserStore = defineStore(
       localStorage.removeItem("refreshToken");
     }
 
-    return { data, accessToken, refreshToken, rememberMe, setTokens, clear };
+    return {
+      user,
+      accessToken,
+      setAuthorized,
+      refreshToken,
+      rememberMe,
+      setTokens,
+      saveUser,
+      clear,
+    };
   },
   {
     persist: true,

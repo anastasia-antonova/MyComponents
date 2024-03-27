@@ -11,28 +11,29 @@ body.no-scroll {
   overflow: hidden;
 }
 
+* {
+  font-family: Inter;
+}
+
 .title-default {
-  margin-bottom: 8px;
 
   font-family: Inter;
   font-size: 60px;
   font-weight: 800;
   line-height: 66px;
-  letter-spacing: 0em;
   color: var(--black);
 
-  @include media_mobile {
-    font-size: 50px;
-    line-height: 54px;
-  }
 
   &.size-24 {
-    margin-bottom: 12px;
 
     font-size: 24px;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 28px;
   }
+}
+
+.bold {
+  font-weight: 600;
 }
 
 
@@ -52,8 +53,6 @@ body.no-scroll {
 
     border-radius: 8px;
     border: none;
-
-    transition: transform 0.3s, background-color 0.3s;
 
     @include media_mobile{
       font-size: 14px;
@@ -101,14 +100,6 @@ body.no-scroll {
     }
   }
 
-  &__icon {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    align-items: center;
-
-    padding: 12px 14px;
-  }
 }
 
 
@@ -613,6 +604,27 @@ body.no-scroll {
 }
 
 button {
+  cursor: pointer;
+  &.btn-icon {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+
+  &.primary {
+    padding: 14px 16px;
+    box-sizing: border-box;
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: var(--primary-hover);
+    }
+  }
   &.btn-password{
     position: absolute;
     right: 15px;
@@ -640,4 +652,205 @@ button {
       mask-image: url("@/assets/image/show-password.svg");
     }
   }
+  .icon {
+    mask-repeat: no-repeat;
+    mask-position: center;
+
+  }
+  .icon-edit {
+    mask-image: url("@/assets/image/icon/edit.svg");
+    background-color: var(--white);
+
+  }
+  &.save {
+    background: var(--accept);
+
+    &:hover {
+      background-color: var(--accent_hover);
+    }
+  }
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.icon-image {
+  mask-image: url("@/assets/image/icon/image.svg");
+  background-color: #ffffff;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid var(--secondary);
+  width: 320px;
+  padding: 20px;
+  border-radius: 4px;
+  box-sizing: border-box;
+
+  @include media_mobile {
+    padding: 0 12px 0;
+    width: 100%;
+    border: inherit;
+  }
+
+
+
+  .work {
+    display: flex;
+    flex-direction: column;
+    h2 {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid var(--secondary);
+      padding: 14px 0 14px;
+
+      .container-title {
+        display: flex;
+        gap:12px;
+        width: 50%;
+      }
+
+      p {
+        width: 50%;
+      }
+
+      .form-edit {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 248px;
+
+
+        label {
+          min-width: 220px;
+        }
+
+        input, textarea {
+          height: 50px;
+          background-color: inherit;
+          border: 1px solid var(--primary);
+          border-radius: 4px;
+          padding: 14px 16px;
+          box-sizing: border-box;
+
+        }
+        textarea {
+          min-height: 318px;
+        }
+      }
+
+
+      &.bottom {
+        border-bottom: 1px solid var(--secondary);
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 20px;
+        text-wrap: nowrap;
+
+        &.wrap {
+          text-wrap: wrap;
+
+          @include media_mobile {
+            width: 170px;
+          }
+        }
+
+        &.dots {
+          max-width: 134px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .icon-birth {
+        mask-image: url("@/assets/image/icon/user/birth.svg");
+        background-color: var(--text);
+      }
+      .icon-call {
+        mask-image: url("@/assets/image/icon/user/call.svg");
+        background-color: var(--text);
+      }
+      .icon-company {
+        mask-image: url("@/assets/image/icon/user/company.svg");
+        background-color: var(--text);
+      }
+      .icon-compass {
+        mask-image: url("@/assets/image/icon/user/compass.svg");
+        background-color: var(--text);
+      }
+      .icon-department {
+        mask-image: url("@/assets/image/icon/user/department.svg");
+        background-color: var(--text);
+      }
+      .icon-gender {
+        mask-image: url("@/assets/image/icon/user/gender.svg");
+        background-color: var(--text);
+      }
+      .icon-github {
+        mask-image: url("@/assets/image/icon/user/github.svg");
+        background-color: var(--text);
+      }
+      .icon-gitlab {
+        mask-image: url("@/assets/image/icon/user/gitlab.svg");
+        background-color: var(--text);
+      }
+      .icon-letter {
+        mask-image: url("@/assets/image/icon/user/letter.svg");
+        background-color: var(--text);
+      }
+      .icon-member {
+        mask-image: url("@/assets/image/icon/user/member.svg");
+        background-color: var(--text);
+      }
+      .icon-visible {
+        mask-image: url("@/assets/image/icon/user/visible.svg");
+        background-color: var(--text);
+      }
+      .icon-name {
+        mask-image: url("@/assets/image/icon/user/user-icon.svg");
+        background-color: var(--text);
+      }
+      .icon-surname {
+        mask-image: url("@/assets/image/icon/user/case.svg");
+        background-color: var(--text);
+
+      }
+      .icon-nickname {
+        mask-image: url("@/assets/image/icon/user/share.svg");
+        background-color: var(--text);
+      }
+
+    }
+  }
+
+}
+
+.icon-search {
+  background-image: url("@/assets/image/icon/search.svg");
+
+}
+
+
+.icon-info {
+  background-image: url("@/assets/image/icon/info.svg");
+
+}
+.icon-settings {
+  background-image: url("@/assets/image/icon/setting.svg");
+
 }

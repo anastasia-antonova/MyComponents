@@ -45,11 +45,11 @@ import router from "@/router";
 
 import { addToast } from "@/composables/toaster";
 import { passwordType, showPassword } from "@/composables/password";
-import { dashboardStore } from "@/store/dashboard";
 import { UserInterface } from "@/types/UserInterface";
 import { ToasterTypes } from "@/constants/toasterTypes";
 import { checkValidation, getValidationClass } from "@/composables/validation";
 import { login } from "@/services/authApi";
+import { useUserStore } from "@/store/user";
 
 const form = reactive({
   identifier: "",
@@ -66,7 +66,7 @@ const rules = computed(() => {
 
 const $v = useVuelidate(rules, form);
 
-const userStore = dashboardStore();
+const userStore = useUserStore();
 
 const signIn = () => {
   const authorize = (res: { jwt: string; user: UserInterface }) => {
@@ -79,10 +79,9 @@ const signIn = () => {
   };
   if (!checkValidation($v.value)) {
     login(form)
-      .then(({ data }) => {
-        if (data) {
-          const { jwt, user } = data;
-          authorize({ jwt, user });
+      .then((res) => {
+        if (res.data) {
+          authorize(res.data);
           addToast({
             status: ToasterTypes.success,
             message: "User Authorized",
