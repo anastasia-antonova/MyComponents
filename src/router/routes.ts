@@ -3,9 +3,7 @@ import { RouteRecordRaw } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "Landing",
-    component: () =>
-      import(/* webpackChunkName: "landing" */ "../views/LandingView.vue"),
+    redirect: "/login",
   },
   {
     path: "/login",
@@ -22,10 +20,20 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
-    path: "/user",
-    name: "User",
+    path: "/dashboard",
+    name: "Dashboard",
     component: () =>
-      import(/* webpackChunkName: "user" */ "../views/UserView.vue"),
+      import(
+        /* webpackChunkName: "dashboard" */ "../layouts/DashboardLayout.vue"
+      ),
+    children: [
+      {
+        path: "user",
+        name: "User",
+        component: () =>
+          import(/* webpackChunkName: "user" */ "../views/UserView.vue"),
+      },
+    ],
   },
 ];
 

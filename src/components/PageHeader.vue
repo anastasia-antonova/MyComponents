@@ -9,6 +9,7 @@
       li Your work
       li.active Projects
       li Teams
+      button Create
 
   .right
     form
@@ -17,12 +18,20 @@
     .icons
       button.icon-info
       button.icon-settings
+    router-link(:to="'/dashboard/user'")
+      img(src="@/assets/image/profile.svg")
 
-    img(src="@/assets/image/profile.svg")
+  create-project
 </template>
 
 <script setup lang="ts">
 import { isMobile, addListener } from "@/composables/actionFunctions";
+import { currentKey, isOpen, openModal } from "@/composables/modalActions";
+
+import { EnumModalKeys } from "@/constants/enumModalKeys";
+import CreateProject from "@/modals/CreateProject.vue";
+
+openModal(EnumModalKeys.CreateProject);
 
 addListener();
 </script>

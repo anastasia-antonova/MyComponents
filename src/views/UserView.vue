@@ -1,5 +1,4 @@
 <template lang="pug">
-page-header
 .test(v-if="isLoader")
   .banner
   .body
@@ -19,16 +18,16 @@ template(v-else)
       .container-upload(v-show="showForm" )
          .icon.icon-image
          p Add your header image
-  .body(v-if="baseUser")
+  .body(v-if="userData")
     .main-content
       .user-image-form
         .upload-image(v-if="showForm")
           .shadow
            .icon.icon-image
           input(type="file" @change="onFileChangeUser($event)" accept="image/*")
-          img(:src="JSON.parse(JSON.stringify(baseUser))" alt="name")
-        template(v-else-if="userData!.image")
-          img.imgUser(:src="JSON.parse(JSON.stringify(userData!.image))" alt="name")
+          img(:src="JSON.parse(JSON.stringify(baseUserImage))" alt="name")
+        template(v-else-if="baseUserImage")
+          img.imgUser(:src="JSON.parse(JSON.stringify(baseUserImage))" alt="name")
         template(v-else)
           img(:src="genderImage" alt="name")
       .user-info
@@ -221,15 +220,16 @@ template(v-else)
 </template>
 
 <script setup lang="ts">
-import PageHeader from "@/components/PageHeader.vue";
 import { isMobile, addListener, listener } from "@/composables/actionFunctions";
 import { computed, onMounted, reactive, ref } from "vue";
 import { changeUser, getUser } from "@/services/userApi";
 import { UserInterface } from "@/types/UserInterface";
 import LoaderComponent from "@/components/common/LoaderComponent.vue";
+import { addToast } from "@/composables/toaster";
+import { ToasterTypes } from "@/constants/toasterTypes";
 const showForm = ref(false);
 const baseBanner = ref("");
-const baseUser = ref("");
+const baseUserImage = ref("");
 const isLoader = ref(false);
 const isButtonLoader = ref(false);
 
@@ -242,9 +242,8 @@ onMounted(() => {
   isLoader.value = true;
   getUser()
     .then(({ data }: { data: UserInterface }) => {
-      console.log(data);
       userData.value = data;
-      baseUser.value = data.image;
+      baseUserImage.value = data.image;
     })
     .finally(() => {
       isLoader.value = false;
@@ -282,7 +281,7 @@ const onFileChangeUser = ($event: Event) => {
 
     toBase64(target.files[0]).then((res) => {
       if (target && target.files && target.files.length) {
-        baseUser.value = res as string;
+        baseUserImage.value = res as string;
       }
     });
   }
@@ -304,10 +303,20 @@ function saveEdit() {
     position: userData.value!.position,
     profile: userData.value!.profile,
     address: userData.value!.address,
-    image: baseUser.value,
+    image: baseUserImage.value,
     banner: baseBanner.value,
   })
     .then()
+    .catch((error) => {
+      addToast({
+        status: ToasterTypes.error,
+        message: `${error.message}`,
+      });
+      console.log(error);
+      console.error(
+        `An error occurred while updating the user profile: ${error.message}`
+      );
+    })
     .finally(() => {
       isButtonLoader.value = false;
       showForm.value = false;

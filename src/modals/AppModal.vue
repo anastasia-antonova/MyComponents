@@ -65,10 +65,11 @@ onBeforeUnmount(() => {
   }
 
   &--wrapper {
+    width: 660px;
     position: relative;
     background-color: #ffffff;
-    border-radius: 12px;
-    padding: 10px;
+    border-radius: 16px;
+    padding: 24px;
   }
 
   &--close {

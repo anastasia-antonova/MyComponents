@@ -41,6 +41,7 @@ export const useUserStore = defineStore(
       accessToken.value = "";
       refreshToken.value = "";
       rememberMe.value = false;
+      isAuthorized.value = false;
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
     }
@@ -48,6 +49,7 @@ export const useUserStore = defineStore(
     return {
       user,
       accessToken,
+      isAuthorized,
       setAuthorized,
       refreshToken,
       rememberMe,
