@@ -9,7 +9,7 @@
       li Your work
       li.active Projects
       li Teams
-      button Create
+      button(@click="openModal(EnumModalKeys.CreateProject)") Create
 
   .right
     form
@@ -30,8 +30,6 @@ import { currentKey, isOpen, openModal } from "@/composables/modalActions";
 
 import { EnumModalKeys } from "@/constants/enumModalKeys";
 import CreateProject from "@/modals/CreateProject.vue";
-
-openModal(EnumModalKeys.CreateProject);
 
 addListener();
 </script>

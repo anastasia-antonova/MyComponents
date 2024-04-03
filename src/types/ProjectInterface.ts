@@ -1,6 +1,8 @@
-export interface UserInterface {
+export interface ProjectInterface {
   title: string;
-  logo: string;
+  logo?: string;
   description: string;
-  tasks?: boolean;
+  key: string;
+  lead: string;
+  members: string;
 }

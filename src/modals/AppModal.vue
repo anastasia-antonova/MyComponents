@@ -6,6 +6,7 @@ teleport(to="body")
       .modal--container
         .modal--wrapper
           .modal--close(@click="close")
+            i.icon.icon-close
           slot(name="content")
 </template>
 
@@ -73,10 +74,22 @@ onBeforeUnmount(() => {
   }
 
   &--close {
+    display: flex;
+    width: 20px;
+    height: 20px;
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: 16px;
+    right: 16px;
     z-index: 9;
+    cursor: pointer;
+    .icon {
+      display: flex;
+
+      &.icon-close {
+        background-color: black;
+        mask-image: url("@/assets/image/close.svg");
+      }
+    }
   }
 
   &--loader {
