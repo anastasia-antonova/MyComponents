@@ -88,7 +88,7 @@ body.no-scroll {
 
   &__action {
     color: #FFFFFF;
-    background-color: var(--perfume);
+    justify-content: center;
 
     &:hover {
       background-color: var(--perfume);
@@ -628,6 +628,8 @@ button {
 
     min-width: 110px;
     position: relative;
+    background-color: rgba(156, 128, 208, 0.43);
+    color: transparent;
 
     &.primary {
       background-color: #5418C36E;
@@ -637,7 +639,6 @@ button {
       }
 
     }
-    background-color: beige;
 
     .example {
       transform: scale(0.5);

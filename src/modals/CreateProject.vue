@@ -1,12 +1,10 @@
 <template lang="pug">
-app-modal(
-  :is-open="isOpen(EnumModalKeys.CreateProject)",
-  @close="openModal(EnumModalKeys.CreateProject)"
-)
+app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
   template(v-slot:content)
     .modal-header
       h3.title-inter Create Project
     .modal-body
+      custom-dropdown
       .modal-input
         .item(:class="getValidationClass($v, 'title')")
           label(for="title") Title
@@ -30,7 +28,7 @@ app-modal(
 
       .modal-image
         label Image logo
-        .container-upload
+        .container-upload(:class="getValidationClass($v, 'logo')")
           input(
             @change="onFileChange($event)",
             name="img",
@@ -40,44 +38,72 @@ app-modal(
           .image-container
             .icon.icon-image
           p Upload a check image (click or drag)JPG, PNG, WEBP (up to 1 mb)
+          span.error(v-if="$v.logo.required.$invalid") Required field
 
-        img.image-show(
-          v-if="form.logo",
-          :src="JSON.parse(JSON.stringify(form.logo))",
-          alt="upload-im"
-        )
+        .container-show(v-if="form.logo")
+          img.image-show(
+            :src="JSON.parse(JSON.stringify(form.logo))",
+            alt="upload-im"
+          )
+          .close-image(@click="closeImage")
       .modal-input
-        .item
-          label(for="title") Description
-          textarea(placeholder="Test description", v-model="form.description")
+        .item(:class="getValidationClass($v, 'description')")
+          label(for="description") Description
+          textarea(
+            placeholder="Test description",
+            v-model="form.description",
+            @blur="$v.description.$touch()"
+          )
+
+          span.error(v-if="$v.description.required.$invalid") Required field
 
       .modal-input
-        .item.width-70
+        .item.width-70(:class="getValidationClass($v, 'lead')")
           label(for="lead") Lead
-          input#lead(type="text", v-model="form.lead")
+          input#lead(
+            type="text",
+            v-model="form.lead",
+            @blur="$v.lead.$touch()"
+          )
 
-        .item
+          span.error(v-if="$v.lead.required.$invalid") Required field
+
+        .item(:class="getValidationClass($v, 'members')")
           label(for="members") Members
-          input#members(type="text", v-model="form.members")
+          input#members(
+            type="text",
+            v-model="form.members",
+            @blur="$v.members.$touch()"
+          )
+          span.error(v-if="$v.members.required.$invalid") Required field
 
     .modal-footer
-      button.btn__default.btn__outline(
-        @click="openModal(EnumModalKeys.CreateProject)"
-      ) Cancel
-      button.btn__default.btn__action(@click="handleCreateProjectItem") Create
+      button.btn__default.btn__outline(@click="closeModal") Cancel
+
+      button.btn__default.btn__action(
+        @click="handleCreateProjectItem",
+        :class="{ loader_button: isButtonLoader }"
+      ) Create
+        .example
+          .loader-content
 </template>
 
 <script setup lang="ts">
 import { isOpen, openModal } from "@/composables/modalActions";
 import { EnumModalKeys } from "@/constants/enumModalKeys";
 import AppModal from "@/modals/AppModal.vue";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { ProjectInterface } from "@/types/ProjectInterface";
 
 import { createProjectItem } from "@/services/projectApi";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { checkValidation, getValidationClass } from "@/composables/validation";
+import { addToast } from "@/composables/toaster";
+import { ToasterTypes } from "@/constants/toasterTypes";
+import CustomDropdown from "@/components/common/CustomDropdown.vue";
+
+const isButtonLoader = ref(false);
 
 const form = reactive({
   title: "",
@@ -94,6 +120,10 @@ const rules = computed(() => {
   const rules: { [key: string]: any } = {
     title: { required },
     key: { required },
+    logo: { required },
+    description: { required },
+    lead: { required },
+    members: { required },
   };
   return rules;
 });
@@ -134,15 +164,47 @@ const onFileChange = ($event: Event) => {
   }
 };
 
+function closeModal() {
+  reset();
+  openModal(EnumModalKeys.CreateProject);
+}
 function handleCreateProjectItem() {
-  createProjectItem(form).then(() => {
-    form.title = "";
-    form.logo = "";
-    form.description = "";
-    form.key = "";
-    form.lead = "";
-    form.members = "";
-  });
+  if (checkValidation($v.value)) {
+    return;
+  }
+  createProjectItem(form)
+    .then(() => {
+      isButtonLoader.value = true;
+      reset();
+      openModal(EnumModalKeys.CreateProject);
+    })
+    .catch((error) => {
+      addToast({
+        status: ToasterTypes.error,
+        message: `${error.message}`,
+      });
+      console.log(error);
+      console.error(
+        `An error occurred while updating the user profile: ${error.message}`
+      );
+    })
+    .finally(() => {
+      isButtonLoader.value = false;
+    });
+}
+
+function closeImage() {
+  form.logo = "";
+}
+
+function reset() {
+  form.title = "";
+  form.logo = "";
+  form.description = "";
+  form.key = "";
+  form.lead = "";
+  form.members = "";
+  $v.value.$reset();
 }
 </script>
 
@@ -156,6 +218,7 @@ function handleCreateProjectItem() {
     display: flex;
     flex-direction: column;
     gap: 16px;
+
     .modal-input {
       display: flex;
       width: 100%;
@@ -168,7 +231,8 @@ function handleCreateProjectItem() {
         flex-direction: column;
 
         &.error {
-          input {
+          input,
+          textarea {
             border-color: var(--red);
           }
 
@@ -237,6 +301,10 @@ function handleCreateProjectItem() {
         border: 1px dashed var(--primary);
         border-radius: 4px;
 
+        span {
+          display: none;
+        }
+
         .image-container {
           width: 40px;
           height: 40px;
@@ -270,10 +338,32 @@ function handleCreateProjectItem() {
         }
       }
 
-      .image-show {
-        object-fit: cover;
+      .container-show {
         width: 70px;
         height: 70px;
+        position: relative;
+
+        .image-show {
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+          border-radius: 4px;
+        }
+
+        .close-image {
+          position: absolute;
+          top: 4px;
+          right: 4px;
+          width: 16px;
+          height: 16px;
+          background-color: var(--white);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          mask-size: cover;
+          mask-image: url("@/assets/image/close.svg");
+        }
       }
     }
   }
@@ -304,8 +394,14 @@ function handleCreateProjectItem() {
         color: var(--accept);
       }
       &.btn__action {
+        display: flex;
+        align-items: center;
+        min-width: 100px;
         background-color: var(--accept);
         color: var(--white);
+      }
+      &.loader-button {
+        background-color: black;
       }
     }
   }
