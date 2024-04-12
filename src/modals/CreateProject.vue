@@ -4,7 +4,6 @@ app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
     .modal-header
       h3.title-inter Create Project
     .modal-body
-      custom-dropdown
       .modal-input
         .item(:class="getValidationClass($v, 'title')")
           label(for="title") Title
@@ -60,21 +59,12 @@ app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
       .modal-input
         .item.width-70(:class="getValidationClass($v, 'lead')")
           label(for="lead") Lead
-          input#lead(
-            type="text",
-            v-model="form.lead",
-            @blur="$v.lead.$touch()"
-          )
-
+          custom-dropdown
           span.error(v-if="$v.lead.required.$invalid") Required field
 
         .item(:class="getValidationClass($v, 'members')")
           label(for="members") Members
-          input#members(
-            type="text",
-            v-model="form.members",
-            @blur="$v.members.$touch()"
-          )
+          custom-multy-dropdown
           span.error(v-if="$v.members.required.$invalid") Required field
 
     .modal-footer
@@ -102,6 +92,7 @@ import { checkValidation, getValidationClass } from "@/composables/validation";
 import { addToast } from "@/composables/toaster";
 import { ToasterTypes } from "@/constants/toasterTypes";
 import CustomDropdown from "@/components/common/CustomDropdown.vue";
+import CustomMultyDropdown from "@/components/common/CustomMultyDropdown.vue";
 
 const isButtonLoader = ref(false);
 

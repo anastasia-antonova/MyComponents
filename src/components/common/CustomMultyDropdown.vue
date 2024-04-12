@@ -1,17 +1,27 @@
 <template lang="pug">
 .custom-select(:tabindex="tabindex", @blur="open = false")
-  .custom-dropdown(:class="{ open: open }", @click="open = !open") {{ selectedUser ? selectedUser.attributes.name : "no data" }}
+  .custom-dropdown(:class="{ open: open }", @click="open = !open") {{ selectedUser }}
+    .icon.icon-arrow
   ul(:class="{ selectHide: !open }")
+    .member-button
+      p Members
+      .button-select
+        p Select All
+        p Clear
     li(
-      v-for="(item, index) of leadData",
+      v-for="(item, index) of memberData",
+      :class="{ selected: isSelected(item.id) }",
       :key="index",
       @click="selectOption(item.id)"
-    ) {{ item.attributes.name }}
+    )
+      .image-lead {{ initialLetter(item) }}
+      p {{ item.attributes.name }} {{ item.attributes.surname }}
 </template>
 
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
-import { getLeadList } from "@/services/LeadApi";
+import { MembersTypes } from "@/types/MembersTypes";
+import { getMemberList } from "@/services/memberApi";
 import { LeadsTypes } from "@/types/LeadsTypes";
 
 const props = defineProps({
@@ -28,31 +38,63 @@ const props = defineProps({
 const emit = defineEmits(["input"]);
 
 const open = ref(false);
-const leadData = ref<LeadsTypes[]>([]);
-const selected = ref(-1);
+const memberData = ref<MembersTypes[]>([]);
+const selected = ref<number[]>([]);
 
 const selectedUser = computed(() => {
-  if (selected.value !== -1) {
-    const findIndex = leadData.value.findIndex((value) => {
-      return value.id === selected.value;
+  if (selected.value.length) {
+    const mapName = selected.value.map((value) => {
+      const findIndex = memberData.value.findIndex((v) => {
+        return v.id === value;
+      });
+      if (findIndex !== -1) {
+        return (
+          memberData.value[findIndex].attributes.name +
+          " " +
+          memberData.value[findIndex].attributes.surname
+        );
+      }
+      return "";
     });
-    if (findIndex !== -1) {
-      return leadData.value[findIndex];
+    if (mapName.length > 2) {
+      return mapName.slice(0, 2).join(", ") + `  +${mapName.length - 2} more`;
+    } else {
+      return mapName.join(", ");
     }
   }
-  return null;
+  return "no data";
 });
 const selectOption = (option: number) => {
-  selected.value = option;
-  emit("input", leadData.value);
-  open.value = false;
+  if (isSelected(option)) {
+    const findIndex = selected.value.findIndex((value) => {
+      return value === option;
+    });
+    selected.value.splice(findIndex, 1);
+  } else {
+    selected.value.push(option);
+  }
+
+  emit("input", memberData.value);
 };
+
+// function selectAll() {}
+
+function isSelected(value: number) {
+  return selected.value.includes(value);
+}
+
+function initialLetter(item: MembersTypes) {
+  if (item && item.attributes.name && item.attributes.surname) {
+    return item.attributes.name[0] + item.attributes.surname[0];
+  } else {
+    return " ";
+  }
+}
 
 onMounted(() => {
   emit("input", selected.value);
-  getLeadList().then(({ data }) => {
-    leadData.value = data.data;
-    selected.value = data.data[0].id;
+  getMemberList().then(({ data }) => {
+    memberData.value = data.data;
   });
 });
 </script>
@@ -63,66 +105,103 @@ onMounted(() => {
 }
 .custom-select {
   position: relative;
-  width: 100%;
-  text-align: left;
   outline: none;
-  height: 47px;
-  line-height: 47px;
 
   .custom-dropdown {
-    color: #fff;
-    border-radius: 0px 0px 6px 6px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--text);
     overflow: hidden;
-    border-right: 1px solid #ad8225;
-    border-left: 1px solid #ad8225;
-    border-bottom: 1px solid #ad8225;
-    position: absolute;
-    background-color: #0a0a0a;
-    left: 0;
-    right: 0;
-    z-index: 1;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    padding: 16px 14px;
+    box-sizing: border-box;
 
-    ul {
-      color: #fff;
-      padding-left: 1em;
-      cursor: pointer;
-      user-select: none;
+    background-color: var(--white);
 
-      li {
-        padding-left: 1em;
-        cursor: pointer;
-        user-select: none;
+    .icon {
+      width: 12px;
+      height: 12px;
+      &.icon-arrow {
+        mask-image: url("@/assets/image/icon/arrow-dawn.svg");
+        background-color: black;
+        mask-size: cover;
+      }
+    }
 
-        &:hover {
-          background-color: #ad8225;
-        }
+    &.open {
+      border-radius: 4px 4px 0px 0px;
+      border-bottom: none;
+      .icon-arrow {
+        transform: rotateZ(180deg);
       }
     }
   }
 
-  .selected {
-    background-color: #0a0a0a;
-    border-radius: 6px;
-    border: 1px solid #666666;
-    color: #fff;
-    padding-left: 1em;
+  ul {
+    color: var(--text);
     cursor: pointer;
-    user-select: none;
+    background-color: var(--white);
+    border: 1px solid var(--primary);
+    border-radius: 0 0 4px 4px;
+    position: absolute;
+    width: 100%;
 
-    &.open {
-      border: 1px solid #ad8225;
-      border-radius: 6px 6px 0px 0px;
+    .member-button {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 14px;
+      border-bottom: 1px solid var(--primary);
+
+      .button-select {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        cursor: pointer;
+        text-decoration: underline;
+        color: #035cea;
+      }
     }
 
-    &:after {
-      position: absolute;
-      content: "";
-      top: 22px;
-      right: 1em;
-      width: 0;
-      height: 0;
-      border: 5px solid transparent;
-      border-color: #fff transparent transparent transparent;
+    li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border-bottom: 1px solid #ecebeb;
+      padding: 16px 14px;
+      box-sizing: border-box;
+
+      &.selected {
+        background-color: var(--background);
+        color: var(--text-color);
+        &:last-child {
+          border-radius: 0 0 4px 4px;
+        }
+      }
+      .image-lead {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background-color: var(--perfume);
+        color: var(--white);
+        font-size: 10px;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+      &:first-child {
+        border-top: none;
+      }
+
+      &:hover {
+        background-color: var(--primary-hover);
+        color: var(--white);
+      }
     }
   }
 }

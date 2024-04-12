@@ -1,12 +1,17 @@
 <template lang="pug">
 .custom-select(:tabindex="tabindex", @blur="open = false")
-  .custom-dropdown(:class="{ open: open }", @click="open = !open") {{ selectedUser ? selectedUser.attributes.name : "no data" }}
+  .custom-dropdown(:class="{ open: open }", @click="open = !open")
+    .image-lead {{ initialLetter(selectedUser) }}
+    p {{ selectedUser ? selectedUser.attributes.name : "no data" }}
+    .icon.icon-arrow
   ul(:class="{ selectHide: !open }")
     li(
       v-for="(item, index) of leadData",
       :key="index",
       @click="selectOption(item.id)"
-    ) {{ item.attributes.name }}
+    )
+      .image-lead {{ initialLetter(item) }}
+      p {{ item.attributes.name }} {{ item.attributes.surname }}
 </template>
 
 <script setup lang="ts">
@@ -42,6 +47,7 @@ const selectedUser = computed(() => {
   }
   return null;
 });
+
 const selectOption = (option: number) => {
   selected.value = option;
   emit("input", leadData.value);
@@ -52,9 +58,16 @@ onMounted(() => {
   emit("input", selected.value);
   getLeadList().then(({ data }) => {
     leadData.value = data.data;
-    selected.value = data.data[0].id;
   });
 });
+
+function initialLetter(item: LeadsTypes) {
+  if (item && item.attributes.name && item.attributes.surname) {
+    return item.attributes.name[0] + item.attributes.surname[0];
+  } else {
+    return " ";
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -63,39 +76,102 @@ onMounted(() => {
 }
 .custom-select {
   position: relative;
-  width: 100%;
-  text-align: left;
   outline: none;
-  height: 47px;
-  line-height: 47px;
+  max-height: 50px;
 
   .custom-dropdown {
-    color: #fff;
-    border-radius: 0px 0px 6px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text);
     overflow: hidden;
-    border-right: 1px solid #ad8225;
-    border-left: 1px solid #ad8225;
-    border-bottom: 1px solid #ad8225;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    max-height: 50px;
+
+    background-color: var(--white);
+
+    .image-lead {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background-color: var(--perfume);
+      color: var(--white);
+      font-size: 10px;
+    }
+
+    .icon {
+      width: 12px;
+      height: 12px;
+      &.icon-arrow {
+        mask-image: url("@/assets/image/icon/arrow-dawn.svg");
+        background-color: black;
+        mask-size: cover;
+      }
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
+      margin-left: 12px;
+      flex: 1 1 auto;
+    }
+
+    &.open {
+      border-radius: 4px 4px 0px 0px;
+      border-bottom: none;
+      .icon-arrow {
+        transform: rotateZ(180deg);
+      }
+    }
+  }
+
+  ul {
+    color: var(--text);
+    cursor: pointer;
+    background-color: var(--white);
+    border: 1px solid var(--primary);
+    border-radius: 0 0 4px 4px;
     position: absolute;
-    background-color: #0a0a0a;
-    left: 0;
-    right: 0;
-    z-index: 1;
+    width: 100%;
 
-    ul {
-      color: #fff;
-      padding-left: 1em;
+    li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       cursor: pointer;
-      user-select: none;
+      border-bottom: 1px solid #ecebeb;
+      padding: 16px 14px;
+      box-sizing: border-box;
 
-      li {
-        padding-left: 1em;
-        cursor: pointer;
-        user-select: none;
+      .image-lead {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background-color: var(--perfume);
+        color: var(--white);
+        font-size: 10px;
+      }
 
-        &:hover {
-          background-color: #ad8225;
-        }
+      &:last-child {
+        border-bottom: none;
+      }
+      &:first-child {
+        border-top: none;
+      }
+
+      &:hover {
+        background-color: var(--primary-hover);
+        color: var(--white);
       }
     }
   }
@@ -108,11 +184,6 @@ onMounted(() => {
     padding-left: 1em;
     cursor: pointer;
     user-select: none;
-
-    &.open {
-      border: 1px solid #ad8225;
-      border-radius: 6px 6px 0px 0px;
-    }
 
     &:after {
       position: absolute;
