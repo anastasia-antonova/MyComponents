@@ -3,11 +3,12 @@
   .custom-dropdown(:class="{ open: open }", @click="open = !open") {{ selectedUser }}
     .icon.icon-arrow
   ul(:class="{ selectHide: !open }")
-    .member-button
+    li
       p Members
       .button-select
         p Select All
         p Clear
+
     li(
       v-for="(item, index) of memberData",
       :class="{ selected: isSelected(item.id) }",
@@ -18,11 +19,12 @@
       p {{ item.attributes.name }} {{ item.attributes.surname }}
 </template>
 
+<!--//select all   нада создать функцію де ми мапом витягуємо всі айдішки і потом приравнюєм до нужного масиву а delete all  треба просто приравняти пустий масив-->
+
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
 import { MembersTypes } from "@/types/MembersTypes";
 import { getMemberList } from "@/services/memberApi";
-import { LeadsTypes } from "@/types/LeadsTypes";
 
 const props = defineProps({
   default: {
@@ -78,7 +80,7 @@ const selectOption = (option: number) => {
 };
 
 // function selectAll() {}
-
+console.log(selectAll());
 function isSelected(value: number) {
   return selected.value.includes(value);
 }
@@ -91,6 +93,11 @@ function initialLetter(item: MembersTypes) {
   }
 }
 
+function selectAll() {
+  selected.value = memberData.value.map((value) => {
+    return value.id;
+  });
+}
 onMounted(() => {
   emit("input", selected.value);
   getMemberList().then(({ data }) => {

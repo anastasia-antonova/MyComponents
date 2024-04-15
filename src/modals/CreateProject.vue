@@ -27,7 +27,10 @@ app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
 
       .modal-image
         label Image logo
-        .container-upload(:class="getValidationClass($v, 'logo')")
+        .container-upload(
+          :class="getValidationClass($v, 'logo')",
+          v-if="!form.logo"
+        )
           input(
             @change="onFileChange($event)",
             name="img",
@@ -45,6 +48,8 @@ app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
             alt="upload-im"
           )
           .close-image(@click="closeImage")
+            .icon-close
+      .modal-tags
       .modal-input
         .item(:class="getValidationClass($v, 'description')")
           label(for="description") Description
@@ -352,8 +357,15 @@ function reset() {
           justify-content: center;
           align-items: center;
           cursor: pointer;
-          mask-size: cover;
-          mask-image: url("@/assets/image/close.svg");
+          border-radius: 50%;
+
+          .icon-close {
+            width: 9px;
+            height: 9px;
+            mask-size: cover;
+            mask-image: url("@/assets/image/close.svg");
+            background-color: var(--primary);
+          }
         }
       }
     }
