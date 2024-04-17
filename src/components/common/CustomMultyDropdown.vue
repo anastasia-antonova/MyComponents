@@ -1,5 +1,5 @@
 <template lang="pug">
-.custom-select(:tabindex="tabindex", @blur="open = false")
+.custom-select(@blur="open = false")
   .custom-dropdown(:class="{ open: open }", @click="open = !open") {{ selectedUser }}
     .icon.icon-arrow
   ul(:class="{ selectHide: !open }")
@@ -8,7 +8,6 @@
       .button-select
         p Select All
         p Clear
-
     li(
       v-for="(item, index) of memberData",
       :class="{ selected: isSelected(item.id) }",
@@ -26,17 +25,6 @@ import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
 import { MembersTypes } from "@/types/MembersTypes";
 import { getMemberList } from "@/services/memberApi";
 
-const props = defineProps({
-  default: {
-    type: String,
-    default: null,
-  },
-  tabindex: {
-    type: Number,
-    required: false,
-    default: 0,
-  },
-});
 const emit = defineEmits(["input"]);
 
 const open = ref(false);

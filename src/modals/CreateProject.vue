@@ -50,23 +50,20 @@ app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
           .close-image(@click="closeImage")
             .icon-close
       .modal-tags
-      .modal-input
-        .item(:class="getValidationClass($v, 'description')")
-          label(for="description") Description
-          textarea(
-            placeholder="Test description",
-            v-model="form.description",
-            @blur="$v.description.$touch()"
-          )
-
-          span.error(v-if="$v.description.required.$invalid") Required field
-
+        .tags-container
+          h2 Tags:
+          .show-tags
+            .item-tag(v-for="(item, index) of selectedTags", :key="index")
+              p {{ item.attributes.name }}
+        dropdawn-tags(
+          :selected="selectedTags",
+          @add-tag="selectedTags.push($event)"
+        )
       .modal-input
         .item.width-70(:class="getValidationClass($v, 'lead')")
           label(for="lead") Lead
           custom-dropdown
           span.error(v-if="$v.lead.required.$invalid") Required field
-
         .item(:class="getValidationClass($v, 'members')")
           label(for="members") Members
           custom-multy-dropdown
@@ -98,6 +95,12 @@ import { addToast } from "@/composables/toaster";
 import { ToasterTypes } from "@/constants/toasterTypes";
 import CustomDropdown from "@/components/common/CustomDropdown.vue";
 import CustomMultyDropdown from "@/components/common/CustomMultyDropdown.vue";
+import DropdawnTags from "@/components/common/DropdawnTags.vue";
+import { TagsTypes } from "@/types/TagsTypes";
+
+const selectedTags = ref<TagsTypes[]>([]);
+
+const open = ref(false);
 
 const isButtonLoader = ref(false);
 
@@ -365,6 +368,46 @@ function reset() {
             mask-size: cover;
             mask-image: url("@/assets/image/close.svg");
             background-color: var(--primary);
+          }
+        }
+      }
+    }
+    .modal-tags {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      position: relative;
+      .tags-container {
+        display: flex;
+        gap: 8px;
+
+        .show-tags {
+          display: flex;
+          gap: 8px;
+        }
+      }
+      h2 {
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 400;
+      }
+      .add-tags {
+        background-color: var(--primary);
+        width: fit-content;
+        border-radius: 8px;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 6px 8px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        color: var(--white);
+        .icon {
+          width: 12px;
+          &.icon-plus {
+            mask-image: url("@/assets/image/icon/plus.svg");
+            background-color: var(--white);
           }
         }
       }
