@@ -55,6 +55,7 @@ app-modal(:is-open="isOpen(EnumModalKeys.CreateProject)", @close="closeModal")
           .show-tags
             .item-tag(v-for="(item, index) of selectedTags", :key="index")
               p {{ item.attributes.name }}
+                .icon.icon-close(@click="deleteItem(item.id)")
         dropdawn-tags(
           :selected="selectedTags",
           @add-tag="selectedTags.push($event)"
@@ -86,7 +87,6 @@ import { EnumModalKeys } from "@/constants/enumModalKeys";
 import AppModal from "@/modals/AppModal.vue";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { ProjectInterface } from "@/types/ProjectInterface";
-
 import { createProjectItem } from "@/services/projectApi";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
@@ -204,6 +204,17 @@ function reset() {
   form.lead = "";
   form.members = "";
   $v.value.$reset();
+}
+
+function deleteItem(id: number) {
+  if (selectedTags.value) {
+    const index = selectedTags.value.findIndex((value) => {
+      return value.id === id;
+    });
+    if (index !== -1) {
+      selectedTags.value.splice(index, 1);
+    }
+  }
 }
 </script>
 
@@ -379,11 +390,37 @@ function reset() {
       position: relative;
       .tags-container {
         display: flex;
+        align-items: center;
         gap: 8px;
 
         .show-tags {
           display: flex;
           gap: 8px;
+
+          .item-tag {
+            p {
+              display: flex;
+              gap: 4px;
+              align-items: center;
+              flex-direction: row-reverse;
+              padding: 6px 8px;
+              background-color: var(--accept);
+              color: var(--white);
+              border-radius: 8px;
+              font-size: 14px;
+              line-height: 20px;
+              max-height: 32px;
+
+              .icon {
+                width: 10px;
+                height: 10px;
+                &.icon-close {
+                  mask-image: url("@/assets/image/close.svg");
+                  background-color: var(--white);
+                }
+              }
+            }
+          }
         }
       }
       h2 {

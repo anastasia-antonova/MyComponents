@@ -8,8 +8,7 @@ button.btn__default.add-tags(@click="open = !open")
       .search
         .icon.icon-search
     li(
-      v-for="(item, index) of tagsData",
-      :class="{ selected: isSelected(item.id) }",
+      v-for="(item, index) of tagsDataFilter",
       :key="index",
       @click="selectOption(item)"
     )
@@ -43,6 +42,12 @@ function isSelected(id: number) {
   return index !== -1;
 }
 
+const tagsDataFilter = computed(() => {
+  return tagsData.value.filter((value) => {
+    return !isSelected(value.id);
+  });
+});
+
 onMounted(() => {
   getTagsList().then(({ data }) => {
     tagsData.value = data.data;
@@ -53,6 +58,31 @@ onMounted(() => {
 <style scoped lang="scss">
 .selectHide {
   display: none;
+}
+
+.add-tags {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 60px;
+  padding: 6px 8px;
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  max-height: 32px;
+
+  .icon {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    &.icon-plus {
+      mask-image: url("@/assets/image/icon/plus.svg");
+      background-color: var(--white);
+      mask-size: contain;
+    }
+  }
 }
 .custom-select {
   outline: none;
@@ -97,6 +127,7 @@ onMounted(() => {
     border-radius: 4px;
     position: absolute;
     left: 0;
+    top: 57px;
     width: 220px;
 
     .member-button {
@@ -131,6 +162,7 @@ onMounted(() => {
           border-radius: 0 0 4px 4px;
         }
       }
+
       .image-lead {
         display: flex;
         align-items: center;
