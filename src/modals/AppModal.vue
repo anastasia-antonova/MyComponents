@@ -37,6 +37,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+@import "@/scss/_media";
+@import "@/scss/styles";
+
 .modal {
   width: 100%;
   height: 100%;
@@ -47,6 +50,10 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @include media_mobile {
+    overflow: auto;
+  }
 
   &--backdrop {
     width: 100%;
@@ -63,6 +70,12 @@ onBeforeUnmount(() => {
     overflow-y: auto;
     padding: 10px;
     z-index: 11;
+
+    @include media_mobile {
+      width: 100%;
+      padding: unset;
+      overflow-y: inherit;
+    }
   }
 
   &--wrapper {
@@ -71,6 +84,12 @@ onBeforeUnmount(() => {
     background-color: #ffffff;
     border-radius: 16px;
     padding: 24px;
+    box-sizing: border-box;
+
+    @include media_mobile {
+      width: 100%;
+      padding: 12px;
+    }
   }
 
   &--close {

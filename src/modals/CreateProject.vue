@@ -224,6 +224,14 @@ function deleteItem(id: number) {
 @import "@/scss/styles";
 
 .modal {
+  .modal-header {
+    h3 {
+      @include media_mobile {
+        font-size: 16px;
+        text-align: center;
+      }
+    }
+  }
   .modal-body {
     display: flex;
     flex-direction: column;
@@ -233,6 +241,10 @@ function deleteItem(id: number) {
       display: flex;
       width: 100%;
       gap: 16px;
+
+      @include media_mobile {
+        flex-direction: column;
+      }
 
       .item {
         width: 100%;
@@ -279,6 +291,10 @@ function deleteItem(id: number) {
 
         &.width-70 {
           width: 70%;
+
+          @include media_mobile {
+            width: 100%;
+          }
         }
       }
     }
@@ -458,6 +474,11 @@ function deleteItem(id: number) {
         font-size: 24px;
         line-height: 28px;
         font-weight: 500;
+
+        @include media_mobile {
+          font-size: 16px;
+          line-height: 26px;
+        }
       }
     }
   }

@@ -4,15 +4,16 @@ button.btn__default.add-tags(@click="open = !open")
   p Add
 .custom-select(:class="{ selectHide: !open }")
   ul
-    li
-      .search
-        .icon.icon-search
-    li(
+    li.search
+      .icon.icon-search
+      input(v-model="search")
+    li.list-item(
       v-for="(item, index) of tagsDataFilter",
       :key="index",
       @click="selectOption(item)"
     )
       p {{ item.attributes.name }}
+    li(v-if="!tagsDataFilter.length") No resolts
 </template>
 
 <script setup lang="ts">
@@ -29,6 +30,7 @@ const props = defineProps({
 const emit = defineEmits(["addTag"]);
 
 const open = ref(false);
+const search = ref("");
 const tagsData = ref<TagsTypes[]>([]);
 
 const selectOption = (option: TagsTypes) => {
@@ -43,9 +45,15 @@ function isSelected(id: number) {
 }
 
 const tagsDataFilter = computed(() => {
-  return tagsData.value.filter((value) => {
-    return !isSelected(value.id);
-  });
+  return tagsData.value
+    .filter((value) => {
+      return value.attributes.name
+        .toLowerCase()
+        .includes(search.value.toLowerCase());
+    })
+    .filter((value) => {
+      return !isSelected(value.id);
+    });
 });
 
 onMounted(() => {
@@ -127,24 +135,8 @@ onMounted(() => {
     border-radius: 4px;
     position: absolute;
     left: 0;
-    top: 57px;
+    top: 46px;
     width: 220px;
-
-    .member-button {
-      display: flex;
-      justify-content: space-between;
-      padding: 16px 14px;
-      border-bottom: 1px solid var(--primary);
-
-      .button-select {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-        cursor: pointer;
-        text-decoration: underline;
-        color: #035cea;
-      }
-    }
 
     li {
       display: flex;
@@ -182,9 +174,43 @@ onMounted(() => {
         border-top: none;
       }
 
-      &:hover {
+      &.list-item:hover {
         background-color: var(--primary-hover);
         color: var(--white);
+      }
+
+      &.search {
+        z-index: 9;
+        position: relative;
+
+        .icon {
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+          z-index: 1;
+
+          &.icon-plus {
+            mask-image: url("@/assets/image/icon/search.svg");
+            background-color: var(--text);
+          }
+        }
+
+        input {
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+          position: absolute;
+          top: 0;
+          left: 0;
+          border: none;
+          padding-left: 48px;
+          border-radius: 4px;
+
+          &:focus {
+            outline: none;
+          }
+        }
       }
     }
   }

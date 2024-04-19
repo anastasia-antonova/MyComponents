@@ -2,6 +2,8 @@
 .header-mobile(v-if="isMobile")
   img(src="@/assets/image/profile.svg")
   h2 My profile
+  .icon.icon-plus(@click="openModal(EnumModalKeys.CreateProject)")
+  create-project
 .header(v-else)
   .left
     .logo
@@ -10,7 +12,6 @@
       li.active Projects
       li Teams
       button(@click="openModal(EnumModalKeys.CreateProject)") Create
-
   .right
     form
       input(type="text", placeholder="Search issue or project")
@@ -147,6 +148,18 @@ addListener();
     text-align: center;
     margin: auto;
     padding-right: 44px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    mask-size: cover;
+    z-index: 9;
+    &.icon-plus {
+      mask-image: url("@/assets/image/plus.svg");
+      background-color: var(--white);
+    }
   }
 }
 </style>
